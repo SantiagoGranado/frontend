@@ -1,35 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function BuscarPorProfesional({ onBuscar }) {
+export default function BuscarPorProfesional({ onSeleccionar }) {
   const [busqueda, setBusqueda] = useState("");
+  const [profesionales, setProfesionales] = useState([]);
+  const [resultados, setResultados] = useState([]);
+
+  // Cargar todos los profesionales al iniciar
+  useEffect(() => {
+    fetch("http://localhost:8080/api/profesionales")
+      .then(res => res.json())
+      .then(data => setProfesionales(data));
+  }, []);
+
+  // Filtrar cuando el usuario escribe
+  useEffect(() => {
+    if (busqueda.length >= 2) {
+      const value = busqueda.toLowerCase();
+      setResultados(
+        profesionales.filter(p =>
+          p.nombre.toLowerCase().includes(value)
+        )
+      );
+    } else {
+      setResultados([]);
+    }
+  }, [busqueda, profesionales]);
+
   return (
     <div className="w-full max-w-md mx-auto mt-6 px-2">
       <h2 className="font-semibold text-lg mb-4" style={{ color: "#010031" }}>
-        Selecciona o busca un profesional
+        Buscar profesional
       </h2>
-      <div className="relative">
-        <input
-          className="w-full h-12 rounded-lg px-4 pr-12"
-          style={{
-            background: "#fff",
-            border: "1px solid #010031",
-            color: "#010031",
-            fontWeight: 500,
-          }}
-          placeholder="Escribe el nombre de un profesional"
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
-        <button
-          className="absolute top-0 right-0 h-12 px-4 flex items-center"
-          style={{ color: "#010031" }}
-          onClick={() => onBuscar?.(busqueda)}
-        >
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2"/>
-            <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </button>
+      <input
+        className="w-full h-12 rounded-lg px-4 mb-5"
+        style={{
+          background: "#fff",
+          border: "1px solid #010031",
+          color: "#010031",
+          fontWeight: 500,
+        }}
+        placeholder="Escribe el nombre o apellidos"
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+      />
+      <div>
+        {busqueda.length >= 2 && (
+          resultados.length === 0
+            ? <div className="text-center text-red-600 py-2">No se ha encontrado ningún profesional.</div>
+            : (
+              <ul className="divide-y divide-gray-200 mt-2 rounded border">
+                {resultados.map(p => (
+                  <li
+                    key={p.id}
+                    className="px-4 py-3 cursor-pointer hover:bg-gray-100"
+                    onClick={() => onSeleccionar?.(p)}
+                  >
+                    <span className="font-medium">{p.nombre}</span>
+                    <span className="block text-xs text-gray-500">{p.hospital} - {p.provincia}</span>
+                  </li>
+                ))}
+              </ul>
+            )
+        )}
       </div>
     </div>
   );

@@ -3,7 +3,17 @@ export default function BuscarPorHospital({
   hospitales = [],
   onProvincia,
   onHospital,
+  provinciaId = "",
+  hospitalId = "",
 }) {
+  // 👉 Añade esta línea: deduplicar hospitales por nombre
+  const nombresMostrados = new Set();
+  const hospitalesSinRepetir = hospitales.filter(h => {
+    if (nombresMostrados.has(h.nombre)) return false;
+    nombresMostrados.add(h.nombre);
+    return true;
+  });
+
   return (
     <div className="w-full max-w-md mx-auto mt-6 px-2">
       <h2 className="font-semibold text-lg mb-4" style={{ color: "#010031" }}>
@@ -18,7 +28,7 @@ export default function BuscarPorHospital({
           fontWeight: 500,
         }}
         onChange={e => onProvincia?.(e.target.value)}
-        defaultValue=""
+        value={provinciaId}
       >
         <option value="" disabled>Buscar una provincia</option>
         {provincias.map((p) => (
@@ -37,10 +47,11 @@ export default function BuscarPorHospital({
           fontWeight: 500,
         }}
         onChange={e => onHospital?.(e.target.value)}
-        defaultValue=""
+        value={hospitalId}
+        disabled={!provinciaId || hospitalesSinRepetir.length === 0}
       >
         <option value="" disabled>Selecciona un Hospital o centro</option>
-        {hospitales.map((h) => (
+        {hospitalesSinRepetir.map((h) => (
           <option key={h.id} value={h.id}>{h.nombre}</option>
         ))}
       </select>

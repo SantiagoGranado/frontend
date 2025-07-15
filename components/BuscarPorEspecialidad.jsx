@@ -1,6 +1,7 @@
 export default function BuscarPorEspecialidad({
   especialidades = [],
   onEspecialidad,
+  especialidadId = "",
 }) {
   return (
     <div className="w-full max-w-md mx-auto mt-6 px-2">
@@ -16,11 +17,15 @@ export default function BuscarPorEspecialidad({
           fontWeight: 500,
         }}
         onChange={e => onEspecialidad?.(e.target.value)}
-        defaultValue=""
+        value={especialidadId}
       >
-        <option value="" disabled>Selecciona una especialidad</option>
+        <option value="" disabled>
+          Selecciona una especialidad
+        </option>
         {especialidades.map((e) => (
-          <option key={e.id} value={e.id}>{e.nombre}</option>
+          <option key={e.id} value={e.id}>
+            {e.nombre}
+          </option>
         ))}
       </select>
     </div>
