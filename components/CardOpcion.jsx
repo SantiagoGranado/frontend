@@ -13,7 +13,7 @@ export default function CardOpcion({ icon, label, onClick }) {
     >
       <span
         style={{
-          backgroundColor: "#e7e8f6", // Mucho más visible, azul muy clarito
+          backgroundColor: "#e7e8f6",
           borderRadius: "999px",
           padding: "0.45rem",
           display: "flex",
