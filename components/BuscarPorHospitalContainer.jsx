@@ -9,7 +9,7 @@ export default function BuscarPorHospitalContainer({ onHospitalSeleccionado }) {
 
   // Cargar provincias al montar
   useEffect(() => {
-    fetch("http://localhost:8080/api/provincias")
+    fetch("https://node.host.hubdespachos.org/api/provincias")
       .then(res => res.json())
       .then(setProvincias);
   }, []);
@@ -18,7 +18,7 @@ export default function BuscarPorHospitalContainer({ onHospitalSeleccionado }) {
   useEffect(() => {
     if (provinciaId) {
       const provinciaSeleccionada = provincias.find(p => p.id.toString() === provinciaId)?.nombre;
-      fetch(`http://localhost:8080/api/hospitales?provincia=${encodeURIComponent(provinciaSeleccionada)}`)
+      fetch(`https://node.host.hubdespachos.org/api/hospitales?provincia=${encodeURIComponent(provinciaSeleccionada)}`)
         .then(res => res.json())
         .then(setHospitales);
       setHospitalId(""); // Reset hospital al cambiar provincia

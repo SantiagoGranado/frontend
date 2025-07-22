@@ -34,7 +34,7 @@ export default function ResumenCitaYPagador({
 
   // Carga aseguradoras al montar
   useEffect(() => {
-    fetch("http://localhost:8080/api/insurances")
+    fetch("https://node.host.hubdespachos.org/api/insurances")
       .then((r) => r.json())
       .then((data) => setAseguradoras(data.filter((i) => i.WEB_ENABLED)))
       .catch(() => setError("No se pudieron cargar las aseguradoras"));
@@ -63,7 +63,7 @@ export default function ResumenCitaYPagador({
     setLoadingHorarios(true);
     setError("");
 
-    fetch("http://localhost:8080/api/availabilities", {
+    fetch("https://node.host.hubdespachos.org/api/availabilities", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

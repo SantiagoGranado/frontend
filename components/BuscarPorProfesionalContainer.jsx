@@ -11,7 +11,7 @@ export default function BuscarPorProfesionalContainer({
 
   useEffect(() => {
     // Construye la URL con los IDs de filtros
-    let url = "http://localhost:8080/api/profesionales";
+    let url = "https://node.host.hubdespachos.org/api/profesionales";
     const params = [];
     if (hospital?.id) params.push("hospitalId=" + encodeURIComponent(hospital.id));
     if (especialidad?.id) params.push("especialidadId=" + encodeURIComponent(especialidad.id));

@@ -6,7 +6,7 @@ export default function BuscarPorEspecialidadContainer({ hospital, onEspecialida
   const [especialidadId, setEspecialidadId] = useState("");
 
   useEffect(() => {
-    let url = "http://localhost:8080/api/especialidades";
+    let url = "https://node.host.hubdespachos.org/api/especialidades";
     if (hospital?.resourceId) {
       url += `?hospitalId=${hospital.resourceId}`;
     }

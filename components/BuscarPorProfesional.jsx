@@ -7,7 +7,7 @@ export default function BuscarPorProfesional({ onSeleccionar }) {
 
   // Cargar todos los profesionales al iniciar
   useEffect(() => {
-    fetch("http://localhost:8080/api/profesionales")
+    fetch("https://node.host.hubdespachos.org/api/profesionales")
       .then(res => res.json())
       .then(data => setProfesionales(data));
   }, []);
