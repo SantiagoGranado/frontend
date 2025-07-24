@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import FormularioDatosPaciente from "./FormularioDatosPaciente";
 
 /**
@@ -14,6 +14,14 @@ export default function ResumenCitaYPagador({
   especialidad,
   onBack,
 }) {
+  // --- SOLO PARA DEBUG ---
+  /*
+  console.log("ResumenCitaYPagador props:", {
+    hospital,
+    profesional,
+    especialidad,
+  });*/
+
   const [aseguradoras, setAseguradoras] = useState([]);
   const [aseguradoraSeleccionada, setAseguradoraSeleccionada] = useState("");
   const [actividadSeleccionada, setActividadSeleccionada] = useState("");
@@ -21,18 +29,16 @@ export default function ResumenCitaYPagador({
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [loadingHorarios, setLoadingHorarios] = useState(false);
   const [error, setError] = useState("");
-  const [formStep, setFormStep] = useState("seleccion"); // seleccion | paciente | exito
+  const [formStep, setFormStep] = useState("seleccion"); 
   const [loadingCita, setLoadingCita] = useState(false);
   const [result, setResult] = useState(null);
 
-  // Tipos de visita estáticos
   const tiposDeVisita = [
     { id: "46", nombre: "Primera visita", icono: "🏥" },
     { id: "47", nombre: "Revisión", icono: "🔄" },
     { id: "48", nombre: "Consulta online", icono: "💻" },
   ];
 
-  // Carga aseguradoras al montar
   useEffect(() => {
     fetch("https://node.host.hubdespachos.org/api/insurances")
       .then((r) => r.json())
@@ -40,7 +46,6 @@ export default function ResumenCitaYPagador({
       .catch(() => setError("No se pudieron cargar las aseguradoras"));
   }, []);
 
-  // Reset al cambiar profesional o especialidad
   useEffect(() => {
     setActividadSeleccionada("");
     setAseguradoraSeleccionada("");
@@ -51,7 +56,6 @@ export default function ResumenCitaYPagador({
     setResult(null);
   }, [profesional, especialidad]);
 
-  // Cuando elige aseguradora y tipo de visita, carga horarios
   useEffect(() => {
     if (!actividadSeleccionada || !aseguradoraSeleccionada) {
       setHorarios([]);
@@ -67,10 +71,10 @@ export default function ResumenCitaYPagador({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        RESOURCE_LID: profesional.id,
+        RESOURCE_LID: profesional?.id,
         ACTIVITY_LID: actividadSeleccionada,
-        ACTIVITY_GROUP_LID: especialidad.id,
-        LOCATION_LID: hospital.id,
+        ACTIVITY_GROUP_LID: especialidad?.id,
+        LOCATION_LID: hospital?.id,
         AVA_START_TIME: "00:00",
         AVA_END_TIME: "23:59",
         AVA_MIN_TIME: "00:00",
@@ -94,7 +98,6 @@ export default function ResumenCitaYPagador({
     especialidad,
   ]);
 
-  // Agrupar horarios por fecha
   const agruparHorariosPorFecha = (horarios) => {
     const grupos = {};
     horarios.forEach((horario) => {
@@ -107,10 +110,17 @@ export default function ResumenCitaYPagador({
 
   const horariosPorFecha = agruparHorariosPorFecha(horarios);
 
-  // Formatear fecha para mostrar bonito
   const formatearFecha = (fecha) => {
-    const date = new Date(fecha);
-    return date.toLocaleDateString("es-ES", {
+    if (!fecha) return "";
+    let dateObj;
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(fecha)) {
+      const [day, month, year] = fecha.split("/");
+      dateObj = new Date(`${year}-${month}-${day}`);
+    } else {
+      dateObj = new Date(fecha);
+    }
+    if (isNaN(dateObj.getTime())) return fecha;
+    return dateObj.toLocaleDateString("es-ES", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -118,25 +128,22 @@ export default function ResumenCitaYPagador({
     });
   };
 
-  // Handler cuando el usuario pulsa confirmar
   function handleConfirmar() {
     setFormStep("paciente");
   }
 
-  // Handler de formulario de paciente
   async function handleSubmitPaciente(datosPaciente) {
     setLoadingCita(true);
     setError("");
     try {
-      // Payload final
       const payload = {
-        RESOURCE_LID: profesional.id,
+        RESOURCE_LID: profesional?.id,
         ACTIVITY_LID: actividadSeleccionada,
-        ACTIVITY_GROUP_LID: especialidad.id,
-        LOCATION_LID: hospital.id,
-        APP_DATE: horarioSeleccionado.AVA_DATE,
-        APP_START_TIME: horarioSeleccionado.AVA_START_TIME,
-        APP_END_TIME: horarioSeleccionado.AVA_END_TIME,
+        ACTIVITY_GROUP_LID: especialidad?.id,
+        LOCATION_LID: hospital?.id,
+        APP_DATE: horarioSeleccionado?.AVA_DATE,
+        APP_START_TIME: horarioSeleccionado?.AVA_START_TIME,
+        APP_END_TIME: horarioSeleccionado?.AVA_END_TIME,
         INSURANCE_LID: aseguradoraSeleccionada,
         ...datosPaciente,
       };
@@ -177,7 +184,6 @@ export default function ResumenCitaYPagador({
     );
   }
 
-  // --- COMPONENTE NUEVO PARA EL BOTÓN TIPO CARDOPCION ---
   function TipoVisitaOpcion({ icon, label, active, onClick }) {
     return (
       <button
@@ -213,8 +219,6 @@ export default function ResumenCitaYPagador({
     );
   }
 
-  // --- FIN DEL COMPONENTE NUEVO ---
-
   return (
     <div className="max-w-4xl mx-auto mt-6 p-6 bg-white rounded-xl shadow-lg">
       <button
@@ -239,7 +243,6 @@ export default function ResumenCitaYPagador({
           📋 Resumen de tu cita
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Centro */}
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
               <span className="text-blue-600 font-semibold">🏥</span>
@@ -251,7 +254,6 @@ export default function ResumenCitaYPagador({
               </div>
             </div>
           </div>
-          {/* Especialidad */}
           <div className="flex items-center">
             <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
               <span className="text-green-600 font-semibold">🩺</span>
@@ -263,7 +265,6 @@ export default function ResumenCitaYPagador({
               </div>
             </div>
           </div>
-          {/* Profesional */}
           <div className="flex items-center">
             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
               <span className="text-purple-600 font-semibold">👨‍⚕️</span>
@@ -281,7 +282,6 @@ export default function ResumenCitaYPagador({
       {/* Formulario */}
       {formStep === "seleccion" && (
         <div className="space-y-6">
-          {/* Tipo de visita */}
           <div>
             <label className="block mb-3 font-semibold text-gray-700">
               Tipo de visita
@@ -302,7 +302,6 @@ export default function ResumenCitaYPagador({
             </div>
           </div>
 
-          {/* Aseguradora */}
           <div>
             <label className="block mb-3 font-semibold text-gray-700">
               Selecciona tu aseguradora
@@ -341,7 +340,6 @@ export default function ResumenCitaYPagador({
             </div>
           </div>
 
-          {/* Horarios disponibles */}
           {actividadSeleccionada && aseguradoraSeleccionada && (
             <div>
               <label className="block mb-3 font-semibold text-gray-700">
@@ -401,7 +399,6 @@ export default function ResumenCitaYPagador({
             </div>
           )}
 
-          {/* Botón de confirmación */}
           {horarioSeleccionado && (
             <div className="mt-8 p-6 bg-gray-50 rounded-lg">
               <div className="mb-4">
