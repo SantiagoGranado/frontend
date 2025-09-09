@@ -32,7 +32,7 @@ export default function ResumenCitaYPagador({
   const [result, setResult] = useState("");
 
   const LIMITE_DIAS = 30;
-  const url = "https://node.host.hubdespachos.org/";
+  const url = "http://localhost:8080";
 
   // Carga aseguradoras
   useEffect(() => {
@@ -272,10 +272,7 @@ export default function ResumenCitaYPagador({
                     <dt className="text-slate-500">Centro</dt>
                     <dd className="font-medium text-slate-800 text-right">{hospital.nombre}</dd>
                   </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <dt className="text-slate-500">Especialidad</dt>
-                    <dd className="font-medium text-slate-800 text-right">{especialidad.nombre}</dd>
-                  </div>
+                  
                   <div className="flex items-start justify-between gap-4">
                     <dt className="text-slate-500">Profesional</dt>
                     <dd className="font-medium text-slate-800 text-right">{profesional.nombre}</dd>

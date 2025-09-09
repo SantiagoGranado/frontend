@@ -26,7 +26,7 @@ export default function SeleccionTipoVisita({
     if (!especialidad?.id || !profesional?.id) return;
     setLoading(true);
     fetch(
-      `https://node.host.hubdespachos.org/` +
+      `http://localhost:8080/api/activities/byResourceAndGroup` +
         `?resourceLid=${profesional.id}&groupLid=${especialidad.id}`
     )
       .then((res) => {
