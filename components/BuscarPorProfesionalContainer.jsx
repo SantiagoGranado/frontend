@@ -9,25 +9,41 @@ export default function BuscarPorProfesionalContainer({
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
 
+  // ← Sólo modifica esta línea para apuntar a local o producción:
+  let urlLocal    = "http://localhost:8080/api/profesionales";
+  let urlHosteada = "https://node.host.hubdespachos.org/api/profesionales";
+  let baseUrl     = urlLocal; 
+  // let baseUrl  = urlHosteada;
+
   useEffect(() => {
-    // Construye la URL con los IDs de filtros
-    let url = "https://node.host.hubdespachos.org/api/profesionales";
-    const params = [];
-    if (hospital?.id) params.push("hospitalId=" + encodeURIComponent(hospital.id));
-    if (especialidad?.id) params.push("especialidadId=" + encodeURIComponent(especialidad.id));
-    if (params.length) url += "?" + params.join("&");
+    const controller = new AbortController();
 
-    fetch(url)
-      .then(r => r.json())
-      .then(data => setProfesionales(data))
-      .catch(() => setError("No se pudo cargar la lista de profesionales"));
-  }, [hospital, especialidad]);
+    // Construimos la URL con URL/URLSearchParams para evitar concatenaciones manuales
+    const urlObj = new URL(baseUrl);
+    if (hospital?.id)     urlObj.searchParams.append("hospitalId",      hospital.id);
+    if (especialidad?.id) urlObj.searchParams.append("especialidadId", especialidad.id);
 
-  // Solo busca si tiene más de 1 letra
-  const searchLower = search.toLowerCase();
+    fetch(urlObj.toString(), { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(setProfesionales)
+      .catch(err => {
+        if (err.name !== "AbortError") {
+          console.error(err);
+          setError("No se pudo cargar la lista de profesionales");
+        }
+      });
+
+    return () => controller.abort();
+  }, [hospital, especialidad, baseUrl]);
+
   const profesionalesFiltrados = search.length > 1
-    ? profesionales.filter(p => p.nombre.toLowerCase().includes(searchLower))
-    : profesionales; // Muestra todos si no hay búsqueda
+    ? profesionales.filter(p =>
+        p.nombre.toLowerCase().includes(search.toLowerCase())
+      )
+    : profesionales;
 
   return (
     <div className="w-full max-w-md mx-auto mt-6 px-2">
@@ -35,15 +51,14 @@ export default function BuscarPorProfesionalContainer({
         Buscar profesional
       </h2>
       <input
-        className="w-full h-12 rounded-lg px-4 mb-6"
-        style={{ background: "#fff", border: "1px solid", color: "#010031" }}
+        className="w-full h-12 rounded-lg px-4 mb-6 border"
+        style={{ background: "#fff", color: "#010031" }}
         type="text"
         placeholder="Escribe el nombre o apellidos"
         value={search}
         onChange={e => setSearch(e.target.value)}
       />
 
-      {/* Resultado */}
       {error && <div className="text-red-600">{error}</div>}
 
       <div>

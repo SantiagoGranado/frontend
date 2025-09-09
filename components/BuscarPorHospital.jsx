@@ -17,7 +17,7 @@ export default function BuscarPorHospital({
   return (
     <div className="w-full max-w-md mx-auto mt-6 px-2">
       <h2 className="font-semibold text-lg mb-4" style={{ color: "#010031" }}>
-        Provincia donde está el Hospital
+        Provincia donde está el Centro
       </h2>
       <select
         className="w-full h-12 rounded-lg px-4 mb-8"
@@ -36,7 +36,7 @@ export default function BuscarPorHospital({
         ))}
       </select>
       <h2 className="font-semibold text-lg mb-3" style={{ color: "#010031" }}>
-        Selecciona o busca un Hospital o centro
+        Selecciona o busca un Centro
       </h2>
       <select
         className="w-full h-12 rounded-lg px-4"
@@ -50,7 +50,7 @@ export default function BuscarPorHospital({
         value={hospitalId}
         disabled={!provinciaId || hospitalesSinRepetir.length === 0}
       >
-        <option value="" disabled>Selecciona un Hospital o centro</option>
+        <option value="" disabled>Selecciona un Centro</option>
         {hospitalesSinRepetir.map((h) => (
           <option key={h.id} value={h.id}>{h.nombre}</option>
         ))}

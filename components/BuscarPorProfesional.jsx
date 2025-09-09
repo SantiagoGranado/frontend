@@ -5,9 +5,13 @@ export default function BuscarPorProfesional({ onSeleccionar }) {
   const [profesionales, setProfesionales] = useState([]);
   const [resultados, setResultados] = useState([]);
 
+  // ← Aquí solo cambias cuál de las dos quieres usar:
+  let urlLocal    = "http://localhost:8080";
+  let urlHosteada = "https://node.host.hubdespachos.org";
+
   // Cargar todos los profesionales al iniciar
   useEffect(() => {
-    fetch("https://node.host.hubdespachos.org/api/profesionales")
+    fetch(urlLocal+"/api/profesionales")
       .then(res => res.json())
       .then(data => setProfesionales(data));
   }, []);

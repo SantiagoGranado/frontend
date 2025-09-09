@@ -2,7 +2,7 @@ import CardOpcion from "./CardOpcion";
 
 const opciones = [
   {
-    label: "Por Hospital",
+    label: "Por Centro",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
         {/* Edificio principal */}
