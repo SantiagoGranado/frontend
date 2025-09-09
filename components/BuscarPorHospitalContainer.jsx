@@ -11,8 +11,8 @@ export default function BuscarPorHospitalContainer({ onHospitalSeleccionado }) {
   // ← Aquí solo cambias cuál de las dos quieres usar:
   let urlLocal    = "http://localhost:8080";
   let urlHosteada = "https://node.host.hubdespachos.org";
-  let baseUrl     = urlLocal; 
-  // let baseUrl  = urlHosteada;
+  //let baseUrl     = urlLocal; 
+   let baseUrl  = urlHosteada;
 
   // Carga provincias al montar
   useEffect(() => {

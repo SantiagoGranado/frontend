@@ -7,8 +7,8 @@ export default function BuscarPorEspecialidadContainer({ hospital, onEspecialida
 
   useEffect(() => {
     setLoading(true); // 👈 inicia carga
-    let urlHosteada = "https://node.host.hubdespachos.org/api/especialidades";
-    let url = "http://localhost:8080/api/especialidades";
+    let url = "https://node.host.hubdespachos.org/api/especialidades";
+    let urlLocal = "http://localhost:8080/api/especialidades";
 
     if (hospital?.resourceId) {
       url += `?hospitalId=${hospital.resourceId}`;
