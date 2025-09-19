@@ -32,8 +32,8 @@ export default function ResumenCitaYPagador({
   const [result, setResult] = useState("");
 
   const LIMITE_DIAS = 30;
-  //const url = "https://node.host.hubdespachos.org";
-  const url = "http://localhost:8080";
+  const url = "https://node.host.hubdespachos.org";
+  //const url = "http://localhost:8080";
 
   // Carga aseguradoras
   useEffect(() => {
