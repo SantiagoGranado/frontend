@@ -12,8 +12,8 @@ export default function BuscarPorProfesionalContainer({
   // ← Sólo modifica esta línea para apuntar a local o producción:
   let urlLocal    = "http://localhost:8080/api/profesionales";
   let urlHosteada = "https://node.host.hubdespachos.org/api/profesionales";
-  //let baseUrl     = urlLocal; 
-   let baseUrl  = urlHosteada;
+  let baseUrl     = urlLocal; 
+   //let baseUrl  = urlHosteada;
 
   useEffect(() => {
     const controller = new AbortController();

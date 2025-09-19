@@ -6,7 +6,7 @@ export default function ConfirmarCita({ onConfirm, disabled }) {
         type="button"
         onClick={onConfirm}
         disabled={disabled}
-        className={`w-full rounded-xl px-4 py-3 font-medium shadow-sm focus:outline-none focus-visible:ring-2
+        className={`w-full rounded-xl px-4 py-3 font-medium shadow-sm focus:outline-none focus-visible:ring-2 cursor-pointer
           ${
             disabled
               ? "bg-zinc-300 text-zinc-600 cursor-not-allowed"
